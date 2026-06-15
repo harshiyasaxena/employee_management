@@ -1,0 +1,201 @@
+.announcements-page {
+  padding: 0;
+}
+
+.announcements-page .page-title {
+  margin: 0 0 20px;
+  color: #0f172a;
+}
+
+.announcements-grid {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 20px;
+}
+
+.announcements-page .card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.announcement-form-card {
+  height: fit-content;
+}
+
+.announcement-list-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.announcement-list-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../../images/assign_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.announcement-list-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.form input,
+.form textarea,
+.form select {
+  padding: 12px 14px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  outline: none;
+  font-family: inherit;
+  background: white;
+}
+
+.form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form button {
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #7c3aed;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.form button:hover {
+  background: #6d28d9;
+}
+
+.announcement-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.announcement-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.announcement-title h2 {
+  margin: 0;
+}
+
+.announcement-icon {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.announcements-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.announcement-item {
+  background: rgba(248, 250, 252, 0.75);
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  transition: all 0.2s ease;
+}
+
+.announcement-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+}
+
+.announcement-item h3 {
+  margin: 0 0 8px;
+  color: #0f172a;
+  font-size: 18px;
+}
+
+.announcement-item p {
+  margin: 0 0 10px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.announcement-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.target-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.target-badge.all {
+  background: rgba(124, 58, 237, 0.12);
+  color: #7c3aed;
+}
+
+.target-badge.employees {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+
+.target-badge.team_leads {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.target-badge.managers {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+}
+
+.announcement-date {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.no-announcements {
+  text-align: center;
+  color: #64748b;
+  padding: 40px 20px;
+}
+
+@media (max-width: 1024px) {
+  .announcements-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .announcement-list-card {
+    min-height: auto;
+  }
+}

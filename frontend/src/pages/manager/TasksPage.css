@@ -1,0 +1,290 @@
+.tasks-page {
+  padding: 0;
+}
+
+.tasks-page .page-title {
+  margin: 0 0 20px;
+  color: #0f172a;
+}
+
+.tasks-page .tasks-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 20px;
+}
+
+.tasks-page .card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.tasks-page .tasks-form-card {
+  height: fit-content;
+}
+
+.tasks-page .tasks-list-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid black;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tasks-page .tasks-list-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("../../images/assign_bg.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.tasks-page .tasks-list-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tasks-page .form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tasks-page .form input,
+.tasks-page .form textarea,
+.tasks-page .form select {
+  padding: 12px 14px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  outline: none;
+  font-family: inherit;
+  background: #fff;
+}
+
+.tasks-page .form textarea {
+  resize: vertical;
+  min-height: 10px;
+}
+
+.tasks-page .form button {
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #7c3aed;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tasks-page .form button:hover {
+  background: #6d28d9;
+}
+
+.tasks-page .table-header {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 18px;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.tasks-page .table-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.tasks-page .title-with-image {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.tasks-page .title-with-image h2 {
+  margin: 0;
+  text-align: center;
+}
+
+.tasks-page .tasks-image {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+}
+
+.tasks-page .table-wrapper {
+  flex: 1;
+  max-height: 300px;
+  overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 14px;
+}
+
+.tasks-page .table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+
+.tasks-page .table th,
+.tasks-page .table td {
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+.tasks-page .table tbody tr {
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.tasks-page .table tbody tr:hover {
+  background: #f8fbff;
+}
+
+.tasks-page .table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tasks-page .delete-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.tasks-page .delete-btn:hover {
+  background: #b91c1c;
+}
+
+.tasks-page .priority-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tasks-page .priority-badge.low {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+}
+
+.tasks-page .priority-badge.medium {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.tasks-page .priority-badge.high {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+}
+
+.tasks-page .priority-badge.critical {
+  background: rgba(127, 29, 29, 0.12);
+  color: #991b1b;
+}
+
+@media (max-width: 1024px) {
+  .tasks-page .tasks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .tasks-page .tasks-list-card {
+    min-height: auto;
+  }
+}
+.tasks-page .table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #f8fafc;
+  color: #0f172a;
+  font-weight: 700;
+  border: 1px solid black;
+}
+.tasks-page .employee-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #dbe2ea;
+  border-radius: 10px;
+  background: #fff;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.tasks-page .employee-list-title {
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.tasks-page .employee-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.tasks-page .employee-checkbox-item input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.status-badge.overdue {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+}
+
+.status-badge.completed {
+  background: rgba(22, 163, 74, 0.12);
+  color: #16a34a;
+}
+
+.status-badge.overdue {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
