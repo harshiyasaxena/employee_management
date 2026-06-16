@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./TasksPage.css";
 import tasksImage from "../../images/assign_task.png";
 import tasksBg from "../../images/assign_bg.jpg";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function TasksPage() {
   const [tasks, setTasks] = useState([]);
@@ -23,7 +24,7 @@ function TasksPage() {
   }, []);
 
   const fetchEmployees = async () => {
-    const res = await fetch("http://localhost:8080/api/employees", {
+    const res = await fetch(`${API_BASE_URL}/api/employees`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -34,7 +35,7 @@ function TasksPage() {
   };
 
   const fetchTasks = async () => {
-    const res = await fetch("http://localhost:8080/api/tasks", {
+    const res = await fetch(`${API_BASE_URL}/api/tasks`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -47,7 +48,7 @@ function TasksPage() {
   const deleteTask = async (id) => {
     try {
       await fetch(
-        `http://localhost:8080/api/tasks/${id}`,
+        `${API_BASE_URL}/api/tasks/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -87,7 +88,7 @@ function TasksPage() {
       assignedToIds: assignToAll ? [] : assignedToIds.map(Number),
     };
 
-    const res = await fetch("http://localhost:8080/api/tasks", {
+    const res = await fetch(`${API_BASE_URL}/api/tasks`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

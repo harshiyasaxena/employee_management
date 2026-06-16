@@ -8,6 +8,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "./AttendancePage.css";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function AttendancePage() {
   const [rows, setRows] = useState([]);
@@ -19,7 +20,7 @@ function AttendancePage() {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-      "http://localhost:8080/api/attendance",
+      `${API_BASE_URL}/api/attendance`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

@@ -21,6 +21,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function StatCard({ title, value, color, icon }) {
   return (
@@ -92,7 +93,7 @@ function ManagerDashboard() {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          "http://localhost:8080/api/dashboard/stats",
+          `${API_BASE_URL}/api/dashboard/stats`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

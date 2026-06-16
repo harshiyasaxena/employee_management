@@ -6,6 +6,7 @@ import com.workforce.repository.TaskRepository;
 import com.workforce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import com.workforce.dto.EmployeeDashboardStatsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -160,6 +161,28 @@ public class TaskServiceImpl implements TaskService {
 
                 return taskRepository.findByAssignedToEmail(email);
         }
+
+        @Override
+public EmployeeDashboardStatsDto getMyStats(String email) {
+
+        List<Task> myTasks = taskRepository.findByAssignedToEmail(email);
+
+        long assignedTasks = myTasks.size();
+
+        long completedTasks = myTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.COMPLETED)
+                .count();
+
+        long pendingTasks = myTasks.stream()
+                .filter(task -> task.getStatus() == TaskStatus.PENDING)
+                .count();
+
+        return new EmployeeDashboardStatsDto(
+                assignedTasks,
+                completedTasks,
+                pendingTasks
+        );
+}
 
         @Override
         public void deleteTask(Long id) {

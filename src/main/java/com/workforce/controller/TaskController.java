@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import org.springframework.security.core.Authentication;
+import com.workforce.dto.EmployeeDashboardStatsDto;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -42,6 +43,14 @@ public class TaskController {
         String email = authentication.getName();
 
         return taskService.getMyTasks(email);
+    }
+
+    @GetMapping("/my/stats")
+    public EmployeeDashboardStatsDto getMyStats(
+            Authentication authentication) {
+
+        return taskService.getMyStats(
+                authentication.getName());
     }
 
     @DeleteMapping("/{id}")

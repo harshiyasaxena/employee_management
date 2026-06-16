@@ -12,8 +12,8 @@ import {
   InputAdornment,
   IconButton,
   Divider,
-  Link,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import loginIcon from "../images/login_form.png";
 
 import {
@@ -50,38 +50,33 @@ function Login() {
     });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await loginUser(formData);
+    try {
+      const response = await loginUser(formData);
 
-    const token = response.data.token;
-    const role = response.data.role;
-    const email = response.data.email;
+      const token = response.data.token;
+      const role = response.data.role;
+      const email = response.data.email;
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", role);
-    localStorage.setItem("email", email);
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", role);
+      localStorage.setItem("email", email);
 
-    alert("Login Successful!");
+      alert("Login Successful!");
 
-    if (role === "MANAGER") {
-      navigate("/manager");
+      if (role === "MANAGER") {
+        navigate("/manager");
+      } else {
+        navigate("/employee");
+      }
+    } catch (error) {
+      console.error(error);
+
+      alert(error.response?.data || "Login Failed");
     }
-    else {
-      navigate("/employee");
-    }
-
-  } catch (error) {
-    console.error(error);
-
-    alert(
-      error.response?.data ||
-      "Login Failed"
-    );
-  }
-};
+  };
 
   return (
     <Box className="login-page">
@@ -107,8 +102,6 @@ function Login() {
             className="login-left"
           >
             <div className="login-animation-wrapper">
-
-
               <Lottie
                 animationData={loginAnimation}
                 loop={true}
@@ -116,8 +109,6 @@ function Login() {
               />
             </div>
           </motion.div>
-
-
 
           {/* RIGHT SIDE */}
           <motion.div
@@ -135,22 +126,18 @@ function Login() {
                   transition={{ duration: 0.6 }}
                 >
                   <div className="login-header">
+                    <div className="login-title-row">
+                      <img
+                        src={loginIcon}
+                        alt="Login"
+                        className="login-title-icon"
+                      />
 
-  <div className="login-title-row">
-    <img
-      src={loginIcon}
-      alt="Login"
-      className="login-title-icon"
-    />
+                      <h2>Login</h2>
+                    </div>
 
-    <h2>Login</h2>
-  </div>
-
-  <p>
-    Enter your credentials to continue
-  </p>
-
-</div>
+                    <p>Enter your credentials to continue</p>
+                  </div>
 
                   <form onSubmit={handleSubmit}>
                     <div className="form-group">
@@ -181,10 +168,7 @@ function Login() {
                       <a href="/">Forgot Password?</a>
                     </div>
 
-                    <button
-                      type="submit"
-                      className="login-submit-btn"
-                    >
+                    <button type="submit" className="login-submit-btn">
                       Login
                     </button>
 
@@ -194,9 +178,7 @@ function Login() {
 
                     <p className="register-text">
                       Don't have an account?{" "}
-                      <Link to="/register">
-                        Register
-                      </Link>
+                      <Link to="/register">Register</Link>
                     </p>
                   </form>
                 </motion.div>

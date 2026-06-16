@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./AnnouncementsPage.css";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function AnnouncementsPage() {
   const [announcements, setAnnouncements] = useState([]);
@@ -12,7 +13,7 @@ function AnnouncementsPage() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/announcements",
+        `${API_BASE_URL}/api/announcements`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -40,7 +41,7 @@ function AnnouncementsPage() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/announcements",
+        `${API_BASE_URL}/api/announcements`,
         {
           method: "POST",
           headers: {

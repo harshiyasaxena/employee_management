@@ -30,6 +30,7 @@ import {
 import Footer from "../components/common/Footer";
 import "./employeeDashboard.css";
 import bgPublic from "../images/manager_bg.jpg";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const EmployeeDashboard = () => {
   const [activeTab, setActiveTab] = useState("tasks");
@@ -53,6 +54,8 @@ const EmployeeDashboard = () => {
   const [user, setUser] = useState(null);
   const [todayAttendance, setTodayAttendance] = useState(null);
   const [activeAttendanceId, setActiveAttendanceId] = useState(null);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
+
 
   const [taskStats, setTaskStats] = useState({
     assignedTasks: 0,
@@ -68,7 +71,7 @@ const EmployeeDashboard = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          "http://localhost:8080/api/employees/profile",
+          `${API_BASE_URL}/api/employees/profile`,
           {
             method: "GET",
             headers: {
@@ -94,7 +97,7 @@ const EmployeeDashboard = () => {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          "http://localhost:8080/api/tasks/my/stats",
+          `${API_BASE_URL}/api/tasks/my/stats`,
           {
             method: "GET",
             headers: {
@@ -122,7 +125,7 @@ const EmployeeDashboard = () => {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/tasks/my",
+       `${API_BASE_URL}/api/tasks/my`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -148,7 +151,7 @@ const EmployeeDashboard = () => {
         const token = localStorage.getItem("token");
 
         const response = await fetch(
-          "http://localhost:8080/api/attendance/my",
+          `${API_BASE_URL}/api/attendance/my`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -183,7 +186,7 @@ const EmployeeDashboard = () => {
         if (!role) return;
 
         const response = await fetch(
-          `http://localhost:8080/api/announcements/role/${role}`,
+         `${API_BASE_URL}/api/announcements/role/${role}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -218,7 +221,6 @@ const EmployeeDashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const [attendanceRecords, setAttendanceRecords] = useState([]);
 
   const getCurrentTime = () => {
     const now = new Date();
@@ -265,7 +267,7 @@ const handleSaveAttendance = async () => {
     const token = localStorage.getItem("token");
 
     const response = await fetch(
-      "http://localhost:8080/api/attendance/leave",
+      `${API_BASE_URL}/api/attendance/checkin/${user.id}`,
       {
         method: "POST",
         headers: {
@@ -293,7 +295,7 @@ const handleSaveAttendance = async () => {
     alert("Leave applied successfully");
 
     const attendanceResponse = await fetch(
-      "http://localhost:8080/api/attendance/my",
+     `${API_BASE_URL}/api/attendance/checkout/${activeAttendanceId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -505,7 +507,7 @@ const handleSaveAttendance = async () => {
                       const token = localStorage.getItem("token");
 
                       const response = await fetch(
-                        `http://localhost:8080/api/attendance/checkin/${user.id}`,
+                       `${API_BASE_URL}/api/attendance/checkin/${user.id}`,
                         {
                           method: "POST",
                           headers: {
@@ -551,7 +553,7 @@ const handleSaveAttendance = async () => {
                       const token = localStorage.getItem("token");
 
                       const response = await fetch(
-                        `http://localhost:8080/api/attendance/checkout/${activeAttendanceId}`,
+                        `${API_BASE_URL}/api/attendance/checkout/${activeAttendanceId}`,
                         {
                           method: "POST",
                           headers: {
@@ -1194,7 +1196,7 @@ const handleSaveAttendance = async () => {
                             : "COMPLETED";
 
                         const response = await fetch(
-                          `http://localhost:8080/api/tasks/${selectedTask.id}/status?status=${newStatus}`,
+                          `${API_BASE_URL}/api/tasks/${selectedTask.id}/status?status=${newStatus}`,
                           {
                             method: "PUT",
                             headers: {

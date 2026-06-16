@@ -4,6 +4,7 @@ import "./EmployeesPage.css";
 import employeeIcon from "../../images/emp_list.png";
 import employeeBg from "../../images/emp_bg.jpg";
 import addEmployeeIcon from "../../images/add_emp.png";
+const API_BASE_URL=import.meta.env.VITE_API_BASE_URL;
 
 function EmployeesPage() {
   const [search, setSearch] = useState("");
@@ -31,7 +32,7 @@ function EmployeesPage() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/employees",
+        `${API_BASE_URL}/api/employees`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -52,7 +53,7 @@ function EmployeesPage() {
       const token = localStorage.getItem("token");
 
       await fetch(
-        `http://localhost:8080/api/employees/${id}`,
+        `${API_BASE_URL}/api/employees/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -99,7 +100,7 @@ function EmployeesPage() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/employees",
+        `${API_BASE_URL}/api/employees`,
         {
           method: "POST",
           headers: {

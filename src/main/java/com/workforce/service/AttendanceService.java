@@ -11,4 +11,6 @@ public interface AttendanceService {
     Attendance checkOut(Long attendanceId);
 
     List<Attendance> getAllAttendance();
+
+    List<Attendance> getMyAttendance(String email);
 }

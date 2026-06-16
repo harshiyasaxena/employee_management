@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./ProfilePage.css";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function ProfilePage() {
   const [profile, setProfile] = useState({
@@ -15,7 +16,7 @@ function ProfilePage() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/employees/profile",
+       `${API_BASE_URL}/api/employees/profile`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -52,7 +53,7 @@ function ProfilePage() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8080/api/employees/profile",
+        `${API_BASE_URL}/api/employees/profile`,
         {
           method: "PUT",
           headers: {

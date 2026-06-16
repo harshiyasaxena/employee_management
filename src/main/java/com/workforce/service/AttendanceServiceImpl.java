@@ -50,4 +50,9 @@ public class AttendanceServiceImpl implements AttendanceService {
     public List<Attendance> getAllAttendance() {
         return attendanceRepository.findAll();
     }
+
+    @Override
+public List<Attendance> getMyAttendance(String email) {
+    return attendanceRepository.findByEmployeeEmail(email);
+}
 }
