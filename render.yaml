@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: employee-management-api
-    env: java
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/*.jar
