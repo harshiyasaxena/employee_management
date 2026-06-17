@@ -21,71 +21,93 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain securityFilterChain(
+                        HttpSecurity http) throws Exception {
 
-        http
-                .cors(Customizer.withDefaults())
-                .csrf(csrf -> csrf.disable())
+                http
+                                .cors(Customizer.withDefaults())
+                                .csrf(csrf -> csrf.disable())
 
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(
-                                SessionCreationPolicy.STATELESS))
+                                .sessionManagement(session -> session.sessionCreationPolicy(
+                                                SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth -> auth
+                                .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers("/api/auth/**")
-                        .permitAll()
+                                                .requestMatchers("/api/auth/**")
+                                                .permitAll()
 
-                        .requestMatchers("/api/dashboard/**")
-                        .hasRole("MANAGER")
+                                                // Employee self-service endpoints
+                                                .requestMatchers(
+                                                                "/api/employees/profile",
+                                                                "/api/tasks/my",
+                                                                "/api/tasks/my/stats",
+                                                                "/api/attendance/my",
+                                                                "/api/attendance/checkin/**",
+                                                                "/api/attendance/checkout/**",
+                                                                "/api/attendance/leave/**")
+                                                .authenticated()
 
-                        .anyRequest()
-                        .authenticated())
+                                                // Manager-only endpoints
+                                                .requestMatchers("/api/dashboard/**")
+                                                .hasRole("MANAGER")
 
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                                                .requestMatchers(
+                                                                "/api/employees",
+                                                                "/api/employees/*")
+                                                .hasRole("MANAGER")
 
-                .httpBasic(Customizer.withDefaults());
+                                                .requestMatchers(
+                                                                "/api/tasks",
+                                                                "/api/tasks/*")
+                                                .hasRole("MANAGER")
 
-        return http.build();
-    }
+                                                .requestMatchers("/api/announcements")
+                                                .hasRole("MANAGER")
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+                                                .anyRequest()
+                                                .authenticated())
 
-        CorsConfiguration configuration = new CorsConfiguration();
+                                .addFilterBefore(
+                                                jwtAuthenticationFilter,
+                                                UsernamePasswordAuthenticationFilter.class)
 
-        configuration.setAllowedOriginPatterns(
-        List.of(
-                "http://localhost:5173",
-                "https://*.vercel.app"
-        ));
+                                .httpBasic(Customizer.withDefaults());
 
-        configuration.setAllowedMethods(
-                List.of(
-                        "GET",
-                        "POST",
-                        "PUT",
-                        "DELETE",
-                        "OPTIONS"));
+                return http.build();
+        }
 
-        configuration.setAllowedHeaders(
-                List.of("*"));
+        @Bean
+        public CorsConfigurationSource corsConfigurationSource() {
 
-        configuration.setAllowCredentials(true);
+                CorsConfiguration configuration = new CorsConfiguration();
 
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
+                configuration.setAllowedOriginPatterns(
+                                List.of(
+                                                "http://localhost:5173",
+                                                "https://*.vercel.app"));
 
-        source.registerCorsConfiguration(
-                "/**",
-                configuration);
+                configuration.setAllowedMethods(
+                                List.of(
+                                                "GET",
+                                                "POST",
+                                                "PUT",
+                                                "DELETE",
+                                                "OPTIONS"));
 
-        return source;
-    }
+                configuration.setAllowedHeaders(
+                                List.of("*"));
+
+                configuration.setAllowCredentials(true);
+
+                UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+                source.registerCorsConfiguration(
+                                "/**",
+                                configuration);
+
+                return source;
+        }
 }

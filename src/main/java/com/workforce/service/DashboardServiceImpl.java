@@ -46,8 +46,9 @@ public class DashboardServiceImpl implements DashboardService {
 
                 long pendingTasks = taskRepository.countByStatus(TaskStatus.PENDING) - overdueTasks;
 
-
-                long presentEmployees = attendanceRepository.countByStatus(AttendanceStatus.PRESENT);
+                long presentEmployees = attendanceRepository.countByDateAndStatus(
+                                LocalDate.now(),
+                                AttendanceStatus.PRESENT);
 
                 return new DashboardStatsDto(
                                 totalEmployees,
@@ -60,40 +61,39 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         @Override
-public List<AttendanceChartDto> getAttendanceChartData() {
-    List<Attendance> allAttendance = attendanceRepository.findAll();
+        public List<AttendanceChartDto> getAttendanceChartData() {
+                List<Attendance> allAttendance = attendanceRepository.findAll();
 
-    Map<YearMonth, List<Attendance>> groupedByMonth = allAttendance.stream()
-            .collect(Collectors.groupingBy(a -> YearMonth.from(a.getDate())));
+                Map<YearMonth, List<Attendance>> groupedByMonth = allAttendance.stream()
+                                .collect(Collectors.groupingBy(a -> YearMonth.from(a.getDate())));
 
-    return groupedByMonth.entrySet().stream()
-            .sorted(Map.Entry.comparingByKey())
-            .map(entry -> {
-                YearMonth ym = entry.getKey();
-                List<Attendance> records = entry.getValue();
+                return groupedByMonth.entrySet().stream()
+                                .sorted(Map.Entry.comparingByKey())
+                                .map(entry -> {
+                                        YearMonth ym = entry.getKey();
+                                        List<Attendance> records = entry.getValue();
 
-                long present = records.stream()
-                        .filter(a -> a.getStatus() == AttendanceStatus.PRESENT)
-                        .count();
+                                        long present = records.stream()
+                                                        .filter(a -> a.getStatus() == AttendanceStatus.PRESENT)
+                                                        .count();
 
-                long late = records.stream()
-                        .filter(a -> a.getStatus() == AttendanceStatus.LATE)
-                        .count();
+                                        long late = records.stream()
+                                                        .filter(a -> a.getStatus() == AttendanceStatus.LATE)
+                                                        .count();
 
-                long absent = records.stream()
-                        .filter(a -> a.getStatus() == AttendanceStatus.ABSENT)
-                        .count();
+                                        long absent = records.stream()
+                                                        .filter(a -> a.getStatus() == AttendanceStatus.ABSENT)
+                                                        .count();
 
-                String monthLabel = ym.getMonth()
-                        .getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+                                        String monthLabel = ym.getMonth()
+                                                        .getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
 
-                return new AttendanceChartDto(
-                        monthLabel,
-                        present,
-                        late,
-                        absent
-                );
-            })
-            .collect(Collectors.toList());
-}
+                                        return new AttendanceChartDto(
+                                                        monthLabel,
+                                                        present,
+                                                        late,
+                                                        absent);
+                                })
+                                .collect(Collectors.toList());
+        }
 }

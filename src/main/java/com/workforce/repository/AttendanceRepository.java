@@ -18,4 +18,9 @@ public interface AttendanceRepository
     Optional<Attendance> findByEmployeeEmailAndDate(String email, LocalDate date);
 
     List<Attendance> findByDateBetween(LocalDate startDate, LocalDate endDate);
+
+    long countByDateAndStatus(
+        LocalDate date,
+        AttendanceStatus status
+);
 }

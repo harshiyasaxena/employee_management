@@ -360,9 +360,6 @@ const EmployeeDashboard = () => {
                 <p>Track your assigned work and prioritize accordingly.</p>
               </div>
 
-              <button className="action-btn" type="button">
-                View All <FiArrowRight />
-              </button>
             </div>
 
             <div className="tasks-section-border">
@@ -753,11 +750,6 @@ const EmployeeDashboard = () => {
       <nav className="dashboard-navbar">
         <div className="nav-brand">
           <div className="manager-logo">WorkForge</div>
-        </div>
-
-        <div className="nav-search">
-          <FiSearch className="search-icon" />
-          <input type="text" placeholder="Search tasks, reports..." />
         </div>
 
         <div className="nav-actions">

@@ -16,11 +16,10 @@ public class JwtService {
         @Value("${jwt.secret}")
         private String secretKey;
 
-private SecretKey getKey() {
-    return Keys.hmacShaKeyFor(
-            secretKey.getBytes(StandardCharsets.UTF_8)
-    );
-}
+        private SecretKey getKey() {
+                return Keys.hmacShaKeyFor(
+                                secretKey.getBytes(StandardCharsets.UTF_8));
+        }
 
         public String generateToken(String email, String role) {
 
