@@ -47,17 +47,10 @@ function StatCard({ title, value, color, icon }) {
   );
 }
 
-const attendanceData = [
-  { month: "Jan", present: 18, late: 3, absent: 1 },
-  { month: "Feb", present: 20, late: 2, absent: 0 },
-  { month: "Mar", present: 19, late: 4, absent: 1 },
-  { month: "Apr", present: 22, late: 1, absent: 1 },
-  { month: "May", present: 21, late: 2, absent: 1 },
-  { month: "Jun", present: 23, late: 1, absent: 0 },
-];
 
 function ManagerDashboard() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [attendanceData, setAttendanceData] = useState([]);
 
   const [stats, setStats] = useState({
     totalEmployees: 0,
@@ -114,6 +107,34 @@ function ManagerDashboard() {
 
     fetchStats();
   }, []);
+
+  useEffect(() => {
+  const fetchAttendanceChart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/dashboard/attendance-chart`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch attendance chart");
+      }
+
+      const data = await response.json();
+      setAttendanceData(data);
+    } catch (error) {
+      console.error("Failed to fetch attendance chart:", error);
+    }
+  };
+
+  fetchAttendanceChart();
+}, []);
 
   return (
     <div>

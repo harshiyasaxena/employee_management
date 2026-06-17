@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FiCheckCircle,
@@ -30,6 +30,7 @@ import {
 import Footer from "../components/common/Footer";
 import "./employeeDashboard.css";
 import bgPublic from "../images/manager_bg.jpg";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const EmployeeDashboard = () => {
@@ -39,24 +40,18 @@ const EmployeeDashboard = () => {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showMembersList, setShowMembersList] = useState(false);
 
-  const [isAttendanceFormOpen, setIsAttendanceFormOpen] = useState(false);
-  const [checkInTime, setCheckInTime] = useState("");
-  const [checkOutTime, setCheckOutTime] = useState("");
-
   const [taskSearch, setTaskSearch] = useState("");
   const [taskFilter, setTaskFilter] = useState("ALL");
-  const [selectedAttendanceDate, setSelectedAttendanceDate] = useState("");
+
+  const [isAttendanceFormOpen, setIsAttendanceFormOpen] = useState(false);
   const [attendanceFormType, setAttendanceFormType] = useState("");
+  const [selectedAttendanceDate, setSelectedAttendanceDate] = useState("");
   const [leaveType, setLeaveType] = useState("SINGLE");
   const [leaveStartDate, setLeaveStartDate] = useState("");
   const [leaveEndDate, setLeaveEndDate] = useState("");
 
   const [user, setUser] = useState(null);
-  const [todayAttendance, setTodayAttendance] = useState(null);
-  const [activeAttendanceId, setActiveAttendanceId] = useState(null);
   const [attendanceRecords, setAttendanceRecords] = useState([]);
-
-
   const [taskStats, setTaskStats] = useState({
     assignedTasks: 0,
     completedTasks: 0,
@@ -66,66 +61,95 @@ const EmployeeDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [notifications, setNotifications] = useState([]);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `${API_BASE_URL}/api/employees/profile`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch profile");
-        }
-        const data = await response.json();
-        setUser(data);
-      } catch (error) {
-        console.error("Error loading profile:", error);
-      }
-    };
-    fetchProfile();
-  }, []);
-
-  useEffect(() => {
-    const fetchTaskStats = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(
-          `${API_BASE_URL}/api/tasks/my/stats`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch task stats");
-        }
-
-        const data = await response.json();
-        setTaskStats(data);
-      } catch (error) {
-        console.error("Error loading task stats:", error);
-      }
-    };
-
-    fetchTaskStats();
-  }, []);
-
-  const fetchMyTasks = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/employees/profile`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      if (!response.ok) {
+        throw new Error("Failed to fetch profile");
+      }
+
+      const data = await response.json();
+      setUser(data);
+    } catch (error) {
+      console.error("Error loading profile:", error);
+    }
+  }, []);
+
+  const fetchTaskStats = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/tasks/my/stats`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch task stats");
+      }
+
+      const data = await response.json();
+      setTaskStats(data);
+    } catch (error) {
+      console.error("Error loading task stats:", error);
+    }
+  }, []);
+
+  const fetchMyTasks = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/tasks/my`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+
+      const data = await response.json();
+      setTasks(data);
+    } catch (error) {
+      console.error("Error loading tasks:", error);
+    }
+  }, []);
+
+  const fetchAttendance = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/api/attendance/my`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch attendance");
+      }
+
+      const data = await response.json();
+      setAttendanceRecords(data);
+    } catch (error) {
+      console.error("Error loading attendance:", error);
+    }
+  }, []);
+
+  const fetchAnnouncements = useCallback(async (role) => {
+    try {
+      if (!role) return;
+
+      const token = localStorage.getItem("token");
       const response = await fetch(
-       `${API_BASE_URL}/api/tasks/my`,
+        `${API_BASE_URL}/api/announcements/role/${role}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,84 +158,28 @@ const EmployeeDashboard = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to fetch tasks");
+        throw new Error("Failed to fetch announcements");
       }
 
       const data = await response.json();
-
-      setTasks(data);
+      setNotifications(data);
     } catch (error) {
-      console.error("Error loading tasks:", error);
+      console.error("Error loading announcements:", error);
     }
-  };
-
-  useEffect(() => {
-    const fetchAttendance = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(
-          `${API_BASE_URL}/api/attendance/my`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch attendance");
-        }
-
-        const data = await response.json();
-
-        console.log("Attendance:", data);
-
-        setAttendanceRecords(data);
-      } catch (error) {
-        console.error("Error loading attendance:", error);
-      }
-    };
-
-    fetchAttendance();
   }, []);
 
   useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        const role = user?.role;
-
-        if (!role) return;
-
-        const response = await fetch(
-         `${API_BASE_URL}/api/announcements/role/${role}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch announcements");
-        }
-
-        const data = await response.json();
-
-        setNotifications(data);
-      } catch (error) {
-        console.error("Error loading announcements:", error);
-      }
-    };
-
-    fetchAnnouncements();
-  }, [user]);
-
-  useEffect(() => {
+    fetchProfile();
+    fetchTaskStats();
     fetchMyTasks();
-  }, []);
+    fetchAttendance();
+  }, [fetchProfile, fetchTaskStats, fetchMyTasks, fetchAttendance]);
+
+  useEffect(() => {
+    if (user?.role) {
+      fetchAnnouncements(user.role);
+    }
+  }, [user, fetchAnnouncements]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -219,160 +187,132 @@ const EmployeeDashboard = () => {
     }, 30000);
 
     return () => clearInterval(interval);
-  }, []);
-
-
-  const getCurrentTime = () => {
-    const now = new Date();
-    return now.toTimeString().slice(0, 5);
-  };
-
-const handleSaveAttendance = async () => {
-    if (!selectedAttendanceDate) return;
-
-    const formatTimeToMinutes = (time) => {
-      if (!time) return 0;
-      const [hour, minute] = time.split(":").map(Number);
-      return hour * 60 + minute;
-    };
-
-    const formatTimeLabel = (time) => {
-      if (!time) return "-";
-      const [hour, minute] = time.split(":");
-      const h = parseInt(hour, 10);
-      const ampm = h >= 12 ? "PM" : "AM";
-      const formattedHour = h % 12 || 12;
-      return `${formattedHour.toString().padStart(2, "0")}:${minute} ${ampm}`;
-    };
-
-    const checkInDeadline = 9 * 60;
-    const checkOutDeadline = 17 * 60;
-
-    let newStatus = "Present";
-
-    if (attendanceFormType === "LEAVE") {
-      newStatus = "Absent";
-    } else if (attendanceFormType === "CHECK_IN") {
-      newStatus =
-        formatTimeToMinutes(checkInTime) > checkInDeadline ? "Late" : "Present";
-    } else if (attendanceFormType === "CHECK_OUT") {
-      newStatus =
-        formatTimeToMinutes(checkOutTime) < checkOutDeadline
-          ? "Late"
-          : "Present";
-    }
-
-    if (attendanceFormType === "LEAVE") {
-  try {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch(
-      `${API_BASE_URL}/api/attendance/checkin/${user.id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          startDate:
-            leaveType === "SINGLE"
-              ? selectedAttendanceDate
-              : leaveStartDate,
-
-          endDate:
-            leaveType === "SINGLE"
-              ? selectedAttendanceDate
-              : leaveEndDate,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error("Leave request failed");
-    }
-
-    alert("Leave applied successfully");
-
-    const attendanceResponse = await fetch(
-     `${API_BASE_URL}/api/attendance/checkout/${activeAttendanceId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    const attendanceData =
-      await attendanceResponse.json();
-
-    setAttendanceRecords(attendanceData);
-
-    setIsAttendanceFormOpen(false);
-    setSelectedAttendanceDate("");
-    setLeaveStartDate("");
-    setLeaveEndDate("");
-    setAttendanceFormType("");
-    setLeaveType("SINGLE");
-
-    return;
-  } catch (error) {
-    console.error(error);
-    alert("Failed to apply leave");
-  }
-}
-
-    const existingIndex = attendanceRecords.findIndex(
-      (record) => record.date === selectedAttendanceDate
-    );
-
-    const existingRecord =
-      existingIndex !== -1 ? attendanceRecords[existingIndex] : null;
-
-    const updatedRecord = {
-      id: existingRecord ? existingRecord.id : Date.now(),
-      date: selectedAttendanceDate,
-      checkIn:
-        attendanceFormType === "CHECK_IN"
-          ? formatTimeLabel(checkInTime)
-          : existingRecord?.checkIn || "-",
-      checkOut:
-        attendanceFormType === "CHECK_OUT"
-          ? formatTimeLabel(checkOutTime)
-          : existingRecord?.checkOut || "-",
-      status: newStatus,
-      location: "Office",
-    };
-
-    let updatedRecords;
-
-    if (existingIndex !== -1) {
-      updatedRecords = [...attendanceRecords];
-      updatedRecords[existingIndex] = updatedRecord;
-    } else {
-      updatedRecords = [updatedRecord, ...attendanceRecords];
-    }
-
-    setAttendanceRecords(updatedRecords);
-    setIsAttendanceFormOpen(false);
-    setCheckInTime("");
-    setCheckOutTime("");
-    setSelectedAttendanceDate("");
-    setAttendanceFormType("");
-  };
+  }, [fetchMyTasks]);
 
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/login";
   };
 
+  const handleCheckIn = async () => {
+    try {
+      if (!user?.id) {
+        alert("User not loaded yet");
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${API_BASE_URL}/api/attendance/checkin/${user.id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Check-in failed");
+      }
+
+      await response.json();
+      await fetchAttendance();
+      alert("Checked in successfully");
+    } catch (error) {
+      console.error(error);
+      alert("Check-in failed");
+    }
+  };
+
+  const handleCheckOut = async () => {
+    try {
+      if (!user?.id) {
+        alert("User not loaded yet");
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${API_BASE_URL}/api/attendance/checkout/${user.id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Checkout failed");
+      }
+
+      await response.json();
+      await fetchAttendance();
+      alert("Checked out successfully");
+    } catch (error) {
+      console.error(error);
+      alert("Checkout failed");
+    }
+  };
+
+  const handleApplyLeave = async () => {
+    try {
+      if (!user?.id) {
+        alert("User not loaded yet");
+        return;
+      }
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/attendance/leave/${user.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            startDate:
+              leaveType === "SINGLE" ? selectedAttendanceDate : leaveStartDate,
+            endDate:
+              leaveType === "SINGLE" ? selectedAttendanceDate : leaveEndDate,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Leave request failed");
+      }
+
+      await response.json();
+      await fetchAttendance();
+
+      alert("Leave applied successfully");
+
+      setIsAttendanceFormOpen(false);
+      setAttendanceFormType("");
+      setSelectedAttendanceDate("");
+      setLeaveType("SINGLE");
+      setLeaveStartDate("");
+      setLeaveEndDate("");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to apply leave");
+    }
+  };
+
   const filteredTasks = tasks.filter((task) => {
+    const title = task.title || "";
+    const description = task.description || "";
+
     const matchesSearch =
-      task.title.toLowerCase().includes(taskSearch.toLowerCase()) ||
-      task.description.toLowerCase().includes(taskSearch.toLowerCase());
+      title.toLowerCase().includes(taskSearch.toLowerCase()) ||
+      description.toLowerCase().includes(taskSearch.toLowerCase());
 
     const matchesFilter =
-      taskFilter === "ALL" || task.status.toUpperCase() === taskFilter;
+      taskFilter === "ALL" || (task.status || "").toUpperCase() === taskFilter;
 
     return matchesSearch && matchesFilter;
   });
@@ -383,6 +323,8 @@ const handleSaveAttendance = async () => {
     const start = new Date(`1970-01-01T${checkIn}`);
     const end = new Date(`1970-01-01T${checkOut}`);
 
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
+
     return Number(((end - start) / (1000 * 60 * 60)).toFixed(1));
   };
 
@@ -392,11 +334,13 @@ const handleSaveAttendance = async () => {
     }),
     hours: calculateHours(record.checkIn, record.checkOut),
     tasks: tasks.filter(
-      (task) =>
-        task.status === "COMPLETED" &&
-        task.deadline === record.date
+      (task) => task.status === "COMPLETED" && task.deadline === record.date
     ).length,
   }));
+
+  const avatarUrl = user?.name
+    ? `https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`
+    : "https://api.dicebear.com/7.x/notionists/svg?seed=employee";
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -441,6 +385,7 @@ const handleSaveAttendance = async () => {
                   <option value="COMPLETED">Completed</option>
                 </select>
               </div>
+
               <div className="tasks-grid">
                 {filteredTasks.map((task) => (
                   <motion.div
@@ -452,7 +397,9 @@ const handleSaveAttendance = async () => {
                   >
                     <div className="task-header">
                       <span
-                        className={`priority-badge ${task.priority.toLowerCase()}`}
+                        className={`priority-badge ${(
+                          task.priority || ""
+                        ).toLowerCase()}`}
                       >
                         {task.priority}
                       </span>
@@ -463,7 +410,7 @@ const handleSaveAttendance = async () => {
                     </div>
 
                     <h3>{task.title}</h3>
-                    <p className="task-desc">{task.description}</p>
+                    <p className="task-desc">{task.description || "-"}</p>
 
                     <div className="task-footer">
                       <div className="task-due">
@@ -471,7 +418,7 @@ const handleSaveAttendance = async () => {
                       </div>
 
                       <span
-                        className={`status-pill ${task.status.toLowerCase()}`}
+                        className={`status-pill ${(task.status || "").toLowerCase()}`}
                       >
                         {task.status}
                       </span>
@@ -502,40 +449,7 @@ const handleSaveAttendance = async () => {
               <div className="attendance-actions-row">
                 <button
                   className="attendance-action-btn checkin"
-                  onClick={async () => {
-                    try {
-                      const token = localStorage.getItem("token");
-
-                      const response = await fetch(
-                       `${API_BASE_URL}/api/attendance/checkin/${user.id}`,
-                        {
-                          method: "POST",
-                          headers: {
-                            Authorization: `Bearer ${token}`,
-                          },
-                        }
-                      );
-
-                      if (!response.ok) {
-                        throw new Error("Check-in failed");
-                      }
-
-                      const attendance = await response.json();
-
-                      setTodayAttendance(attendance);
-                      setActiveAttendanceId(attendance.id);
-
-                      setAttendanceRecords((prev) => [
-                        attendance,
-                        ...prev,
-                      ]);
-
-                      alert("Checked in successfully");
-                    } catch (error) {
-                      console.error(error);
-                      alert("Check-in failed");
-                    }
-                  }}
+                  onClick={handleCheckIn}
                   type="button"
                 >
                   Check In
@@ -543,45 +457,7 @@ const handleSaveAttendance = async () => {
 
                 <button
                   className="attendance-action-btn checkout"
-                  onClick={async () => {
-                    try {
-                      if (!activeAttendanceId) {
-                        alert("Please check in first");
-                        return;
-                      }
-
-                      const token = localStorage.getItem("token");
-
-                      const response = await fetch(
-                        `${API_BASE_URL}/api/attendance/checkout/${activeAttendanceId}`,
-                        {
-                          method: "POST",
-                          headers: {
-                            Authorization: `Bearer ${token}`,
-                          },
-                        }
-                      );
-
-                      if (!response.ok) {
-                        throw new Error("Checkout failed");
-                      }
-
-                      const updatedAttendance = await response.json();
-
-                      setAttendanceRecords((prev) =>
-                        prev.map((record) =>
-                          record.id === updatedAttendance.id
-                            ? updatedAttendance
-                            : record
-                        )
-                      );
-
-                      alert("Checked out successfully");
-                    } catch (error) {
-                      console.error(error);
-                      alert("Checkout failed");
-                    }
-                  }}
+                  onClick={handleCheckOut}
                   type="button"
                 >
                   Check Out
@@ -605,7 +481,7 @@ const handleSaveAttendance = async () => {
             </div>
 
             <AnimatePresence>
-              {isAttendanceFormOpen && (
+              {isAttendanceFormOpen && attendanceFormType === "LEAVE" && (
                 <motion.div
                   initial={{ height: 0, opacity: 0, marginBottom: 0 }}
                   animate={{ height: "auto", opacity: 1, marginBottom: 24 }}
@@ -613,87 +489,55 @@ const handleSaveAttendance = async () => {
                   className="attendance-form-wrapper modern-card"
                 >
                   <div className="attendance-form">
-                    <h3>Record Time</h3>
+                    <h3>Apply Leave</h3>
 
-                    {attendanceFormType === "CHECK_IN" && (
+                    <div className="input-group">
+                      <label>Leave Type</label>
+                      <select
+                        value={leaveType}
+                        onChange={(e) => setLeaveType(e.target.value)}
+                        className="time-input"
+                      >
+                        <option value="SINGLE">Single Day</option>
+                        <option value="RANGE">Date Range</option>
+                      </select>
+                    </div>
+
+                    {leaveType === "SINGLE" && (
                       <div className="input-group">
-                        <label>Check In Time</label>
+                        <label>Select Leave Date</label>
                         <input
-                          type="time"
-                          value={checkInTime}
-                          onChange={(e) => setCheckInTime(e.target.value)}
+                          type="date"
+                          value={selectedAttendanceDate}
+                          onChange={(e) =>
+                            setSelectedAttendanceDate(e.target.value)
+                          }
                           className="time-input"
                         />
                       </div>
                     )}
 
-                    {attendanceFormType === "CHECK_OUT" && (
-                      <div className="input-group">
-                        <label>Check Out Time</label>
-                        <input
-                          type="time"
-                          value={checkOutTime}
-                          onChange={(e) => setCheckOutTime(e.target.value)}
-                          className="time-input"
-                        />
-                      </div>
-                    )}
-
-                    {attendanceFormType === "LEAVE" && (
+                    {leaveType === "RANGE" && (
                       <>
                         <div className="input-group">
-                          <label>Leave Type</label>
-                          <select
-                            value={leaveType}
-                            onChange={(e) => setLeaveType(e.target.value)}
+                          <label>Start Date</label>
+                          <input
+                            type="date"
+                            value={leaveStartDate}
+                            onChange={(e) => setLeaveStartDate(e.target.value)}
                             className="time-input"
-                          >
-                            <option value="SINGLE">Single Day</option>
-                            <option value="RANGE">Date Range</option>
-                          </select>
+                          />
                         </div>
 
-                        {leaveType === "SINGLE" && (
-                          <div className="input-group">
-                            <label>Select Leave Date</label>
-                            <input
-                              type="date"
-                              value={selectedAttendanceDate}
-                              onChange={(e) =>
-                                setSelectedAttendanceDate(e.target.value)
-                              }
-                              className="time-input"
-                            />
-                          </div>
-                        )}
-
-                        {leaveType === "RANGE" && (
-                          <>
-                            <div className="input-group">
-                              <label>Start Date</label>
-                              <input
-                                type="date"
-                                value={leaveStartDate}
-                                onChange={(e) =>
-                                  setLeaveStartDate(e.target.value)
-                                }
-                                className="time-input"
-                              />
-                            </div>
-
-                            <div className="input-group">
-                              <label>End Date</label>
-                              <input
-                                type="date"
-                                value={leaveEndDate}
-                                onChange={(e) =>
-                                  setLeaveEndDate(e.target.value)
-                                }
-                                className="time-input"
-                              />
-                            </div>
-                          </>
-                        )}
+                        <div className="input-group">
+                          <label>End Date</label>
+                          <input
+                            type="date"
+                            value={leaveEndDate}
+                            onChange={(e) => setLeaveEndDate(e.target.value)}
+                            className="time-input"
+                          />
+                        </div>
                       </>
                     )}
 
@@ -704,8 +548,6 @@ const handleSaveAttendance = async () => {
                           setIsAttendanceFormOpen(false);
                           setAttendanceFormType("");
                           setSelectedAttendanceDate("");
-                          setCheckInTime("");
-                          setCheckOutTime("");
                           setLeaveType("SINGLE");
                           setLeaveStartDate("");
                           setLeaveEndDate("");
@@ -717,18 +559,11 @@ const handleSaveAttendance = async () => {
 
                       <button
                         className="save-btn"
-                        onClick={handleSaveAttendance}
+                        onClick={handleApplyLeave}
                         disabled={
-                          (attendanceFormType === "CHECK_IN" &&
-                            !selectedAttendanceDate) ||
-                          (attendanceFormType === "CHECK_OUT" &&
-                            !selectedAttendanceDate) ||
-                          (attendanceFormType === "LEAVE" &&
-                            (leaveType === "SINGLE"
-                              ? !selectedAttendanceDate
-                              : !leaveStartDate || !leaveEndDate)) ||
-                          (attendanceFormType === "CHECK_IN" && !checkInTime) ||
-                          (attendanceFormType === "CHECK_OUT" && !checkOutTime)
+                          leaveType === "SINGLE"
+                            ? !selectedAttendanceDate
+                            : !leaveStartDate || !leaveEndDate
                         }
                         type="button"
                       >
@@ -774,7 +609,9 @@ const handleSaveAttendance = async () => {
 
                       <td>
                         <span
-                          className={`status-badge ${record.status.toLowerCase()}`}
+                          className={`status-badge ${(
+                            record.status || ""
+                          ).toLowerCase()}`}
                         >
                           {record.status}
                         </span>
@@ -833,7 +670,7 @@ const handleSaveAttendance = async () => {
                             offset="95%"
                             stopColor="#2563eb"
                             stopOpacity={0}
-                          />
+                        />
                         </linearGradient>
                       </defs>
                       <CartesianGrid
@@ -846,7 +683,7 @@ const handleSaveAttendance = async () => {
                       <Tooltip
                         contentStyle={{
                           borderRadius: "12px",
-                          border: "none",
+                          border:"none",
                           boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                         }}
                       />
@@ -902,10 +739,6 @@ const handleSaveAttendance = async () => {
     }
   };
 
-  const avatarUrl = user?.name
-    ? `https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`
-    : "https://api.dicebear.com/7.x/notionists/svg?seed=employee";
-
   return (
     <div
       className="app-wrapper"
@@ -938,9 +771,7 @@ const handleSaveAttendance = async () => {
               type="button"
             >
               <FiBell />
-              <span className="notif-badge">
-                {notifications.length}
-              </span>
+              <span className="notif-badge">{notifications.length}</span>
             </button>
 
             <AnimatePresence>
@@ -961,7 +792,7 @@ const handleSaveAttendance = async () => {
                   <div className="dropdown-body">
                     {notifications.map((n) => (
                       <div key={n.id} className="notif-item">
-                        <div className={`notif-dot ${n.type}`}></div>
+                        <div className={`notif-dot ${n.type || ""}`}></div>
                         <div className="notif-content">
                           <h4>{n.title}</h4>
                           <p>{n.message}</p>
@@ -1088,8 +919,9 @@ const handleSaveAttendance = async () => {
               whileHover={{ y: -4 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => setActiveTab("attendance")}
-              className={`nav-card ${activeTab === "attendance" ? "active" : ""
-                }`}
+              className={`nav-card ${
+                activeTab === "attendance" ? "active" : ""
+              }`}
             >
               <div className="nav-card-icon green">
                 <FiClock />
@@ -1161,12 +993,10 @@ const handleSaveAttendance = async () => {
 
                 <div className="member-row">
                   <div className="member-avatar">
-                    {selectedTask.assignedBy?.name?.charAt(0).toUpperCase() || "M"}
+                    {selectedTask.assignedBy?.name?.charAt(0).toUpperCase() ||
+                      "M"}
                   </div>
-
-                  <span>
-                    {selectedTask.assignedBy?.name || "Manager"}
-                  </span>
+                  <span>{selectedTask.assignedBy?.name || "Manager"}</span>
                 </div>
 
                 <br />
@@ -1218,22 +1048,12 @@ const handleSaveAttendance = async () => {
                         );
 
                         setSelectedTask(updatedTask);
-
-                        setTaskStats((prev) => ({
-                          ...prev,
-                          completedTasks:
-                            newStatus === "COMPLETED"
-                              ? prev.completedTasks + 1
-                              : prev.completedTasks - 1,
-                          pendingTasks:
-                            newStatus === "PENDING"
-                              ? prev.pendingTasks + 1
-                              : prev.pendingTasks - 1,
-                        }));
+                        await fetchTaskStats();
                       } catch (error) {
                         console.error(error);
                       }
                     }}
+                    type="button"
                   >
                     {selectedTask.status === "COMPLETED"
                       ? "Mark Pending"

@@ -9,6 +9,13 @@ import com.workforce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import com.workforce.dto.AttendanceChartDto;
+import com.workforce.entity.Attendance;
+import java.time.YearMonth;
+import java.time.format.TextStyle;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,4 +57,42 @@ public class DashboardServiceImpl implements DashboardService {
                                 completionRate,
                                 overdueTasks);
         }
+
+        @Override
+public List<AttendanceChartDto> getAttendanceChartData() {
+    List<Attendance> allAttendance = attendanceRepository.findAll();
+
+    Map<YearMonth, List<Attendance>> groupedByMonth = allAttendance.stream()
+            .collect(Collectors.groupingBy(a -> YearMonth.from(a.getDate())));
+
+    return groupedByMonth.entrySet().stream()
+            .sorted(Map.Entry.comparingByKey())
+            .map(entry -> {
+                YearMonth ym = entry.getKey();
+                List<Attendance> records = entry.getValue();
+
+                long present = records.stream()
+                        .filter(a -> a.getStatus() == AttendanceStatus.PRESENT)
+                        .count();
+
+                long late = records.stream()
+                        .filter(a -> a.getStatus() == AttendanceStatus.LATE)
+                        .count();
+
+                long absent = records.stream()
+                        .filter(a -> a.getStatus() == AttendanceStatus.ABSENT)
+                        .count();
+
+                String monthLabel = ym.getMonth()
+                        .getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+
+                return new AttendanceChartDto(
+                        monthLabel,
+                        present,
+                        late,
+                        absent
+                );
+            })
+            .collect(Collectors.toList());
+}
 }

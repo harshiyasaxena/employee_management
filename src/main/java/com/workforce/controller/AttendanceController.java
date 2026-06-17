@@ -5,6 +5,7 @@ import com.workforce.service.AttendanceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
+import com.workforce.dto.LeaveRequestDto;
 
 import java.util.List;
 
@@ -22,12 +23,18 @@ public class AttendanceController {
         return attendanceService.checkIn(employeeId);
     }
 
-    @PostMapping("/checkout/{attendanceId}")
-    public Attendance checkOut(
-            @PathVariable Long attendanceId) {
+    @PostMapping("/checkout/{employeeId}")
+public Attendance checkOut(
+        @PathVariable Long employeeId) {
+    return attendanceService.checkOut(employeeId);
+}
 
-        return attendanceService.checkOut(attendanceId);
-    }
+@PostMapping("/leave/{employeeId}")
+public Attendance applyLeave(
+        @PathVariable Long employeeId,
+        @RequestBody LeaveRequestDto dto) {
+    return attendanceService.applyLeave(employeeId, dto);
+}
 
     @GetMapping
     public List<Attendance> getAllAttendance() {

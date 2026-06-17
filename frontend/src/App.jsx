@@ -12,9 +12,9 @@ import EmployeesPage from "./pages/manager/EmployeesPage";
 import TasksPage from "./pages/manager/TasksPage";
 import AnnouncementsPage from "./pages/manager/AnnouncementsPage";
 import AttendancePage from "./pages/manager/AttendancePage";
-import AnalyticsPage from "./pages/manager/AnalyticsPage";
 import ProfilePage from "./pages/manager/ProfilePage";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -43,21 +43,20 @@ function App() {
           </PublicLayout>
         }
       />
-
-      <Route path="/manager" element={<ManagerLayout />}>
-        <Route index element={<ManagerDashboard />} />
-        <Route path="employees" element={<EmployeesPage />} />
-        <Route path="tasks" element={<TasksPage />} />
-        <Route path="announcements" element={<AnnouncementsPage />} />
-        <Route path="attendance" element={<AttendancePage />} />
-        <Route path="analytics" element={<AnalyticsPage />} />
-        <Route path="profile" element={<ProfilePage />} />
+      <Route element={<ProtectedRoute allowedRoles={["MANAGER"]} />}>
+        <Route path="/manager" element={<ManagerLayout />}>
+          <Route index element={<ManagerDashboard />} />
+          <Route path="employees" element={<EmployeesPage />} />
+          <Route path="tasks" element={<TasksPage />} />
+          <Route path="announcements" element={<AnnouncementsPage />} />
+          <Route path="attendance" element={<AttendancePage />} />
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
       </Route>
 
-      <Route
-        path="/employee"
-        element={<EmployeeDashboard />}
-      />
+      <Route element={<ProtectedRoute allowedRoles={["EMPLOYEE"]} />}>
+        <Route path="/employee" element={<EmployeeDashboard />} />
+      </Route>
     </Routes>
   );
 }
