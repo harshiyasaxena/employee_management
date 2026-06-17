@@ -8,29 +8,35 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class JwtService {
 
-        private static final String SECRET_KEY = "mySecretKeyForJwtAuthenticationWorkforceManagement2026";
+        @Value("${jwt.secret}")
+        private String secretKey;
 
-        private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+private SecretKey getKey() {
+    return Keys.hmacShaKeyFor(
+            secretKey.getBytes(StandardCharsets.UTF_8)
+    );
+}
 
         public String generateToken(String email, String role) {
 
-    return Jwts.builder()
-            .subject(email)
-            .claim("role", role)
-            .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + 86400000))
-            .signWith(key)
-            .compact();
-}
+                return Jwts.builder()
+                                .subject(email)
+                                .claim("role", role)
+                                .issuedAt(new Date())
+                                .expiration(new Date(System.currentTimeMillis() + 86400000))
+                                .signWith(getKey())
+                                .compact();
+        }
 
         public String extractEmail(String token) {
 
                 Claims claims = Jwts.parser()
-                                .verifyWith(key)
+                                .verifyWith(getKey())
                                 .build()
                                 .parseSignedClaims(token)
                                 .getPayload();
@@ -43,7 +49,7 @@ public class JwtService {
                 try {
 
                         Jwts.parser()
-                                        .verifyWith(key)
+                                        .verifyWith(getKey())
                                         .build()
                                         .parseSignedClaims(token);
 
@@ -54,14 +60,15 @@ public class JwtService {
                         return false;
                 }
         }
+
         public String extractRole(String token) {
 
-    Claims claims = Jwts.parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
+                Claims claims = Jwts.parser()
+                                .verifyWith(getKey())
+                                .build()
+                                .parseSignedClaims(token)
+                                .getPayload();
 
-    return claims.get("role", String.class);
-}
+                return claims.get("role", String.class);
+        }
 }
