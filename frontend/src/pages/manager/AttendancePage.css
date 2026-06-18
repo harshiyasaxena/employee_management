@@ -24,7 +24,7 @@
 .attendance-table-card {
   position: relative;
   overflow: hidden;
-  min-height: 600px;
+  height: 600px;
   display: flex;
   flex-direction: column;
 }
@@ -60,8 +60,9 @@
 
 .table-wrapper {
   flex: 1;
-  overflow-x: auto;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   border-radius: 14px;
 }
 
@@ -129,7 +130,7 @@
 }
 
 .chart-card {
-  min-height: 600px;
+  height: 600px;
   display: flex;
   flex-direction: column;
 }
@@ -222,4 +223,21 @@
   .summary-card h3 {
     font-size: 20px;
   }
+}
+
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 999px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #1d4ed8;
 }
