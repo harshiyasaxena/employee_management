@@ -40,6 +40,8 @@ function Login() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   console.log("Lottie:", Lottie);
   console.log("Animation:", loginAnimation);
 
@@ -52,6 +54,7 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await loginUser(formData);
@@ -75,6 +78,8 @@ function Login() {
       console.error(error);
 
       alert(error.response?.data || "Login Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,7 +173,16 @@ function Login() {
                       <a href="/">Forgot Password?</a>
                     </div>
 
-                    <button type="submit" className="login-submit-btn">
+                    {loading && (
+                      <div className="login-loader-overlay">
+                        <div className="loader"></div>
+                      </div>
+                    )}
+                    <button
+                      type="submit"
+                      className="login-submit-btn"
+                      disabled={loading}
+                    >
                       Login
                     </button>
 
