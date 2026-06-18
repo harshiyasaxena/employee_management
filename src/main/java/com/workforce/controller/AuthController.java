@@ -51,7 +51,7 @@ public class AuthController {
             @RequestBody RegisterRequest request) {
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            return "Email already exists";
+            throw new RuntimeException("Email already exists");
         }
 
         User user = User.builder()
