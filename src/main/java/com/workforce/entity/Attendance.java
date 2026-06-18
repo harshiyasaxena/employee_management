@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "attendance")
@@ -25,9 +25,9 @@ public class Attendance {
 
     private LocalDate date;
 
-    private LocalTime checkIn;
+    private LocalDateTime checkIn;
 
-    private LocalTime checkOut;
+    private LocalDateTime checkOut;
 
     @Enumerated(EnumType.STRING)
     private AttendanceStatus status;
