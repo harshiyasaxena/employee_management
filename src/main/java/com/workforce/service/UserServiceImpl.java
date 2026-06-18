@@ -22,6 +22,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User addEmployee(UserRequestDto dto) {
 
+         if (userRepository.existsByEmail(dto.getEmail())) {
+        throw new RuntimeException("Email already exists");
+    }
+
         User user = User.builder()
                 .name(dto.getName())
                 .email(dto.getEmail())
