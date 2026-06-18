@@ -8,10 +8,12 @@ import com.workforce.repository.AttendanceRepository;
 import com.workforce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalTime;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -22,12 +24,13 @@ public class AttendanceServiceImpl implements AttendanceService {
 
     private static final LocalTime CHECK_IN_DEADLINE = LocalTime.of(9, 0);
     private static final LocalTime CHECK_OUT_DEADLINE = LocalTime.of(17, 0);
+    private static final ZoneId ZONE_ID = ZoneId.of("Asia/Kolkata");
 
     @Override
     public Attendance checkIn(Long employeeId) {
         User employee = userRepository.findById(employeeId).orElseThrow();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZONE_ID);
 
         Attendance existing = attendanceRepository
                 .findByEmployeeEmailAndDate(employee.getEmail(), today)
@@ -42,9 +45,9 @@ public class AttendanceServiceImpl implements AttendanceService {
                 throw new RuntimeException("You have already checked in today.");
             }
 
-            existing.setCheckIn(LocalTime.now());
+            existing.setCheckIn(LocalDateTime.now(ZONE_ID));
 
-            if (LocalTime.now().isAfter(CHECK_IN_DEADLINE)) {
+            if (LocalTime.now(ZONE_ID).isAfter(CHECK_IN_DEADLINE)) {
                 existing.setStatus(AttendanceStatus.LATE);
             } else {
                 existing.setStatus(AttendanceStatus.PRESENT);
@@ -56,8 +59,8 @@ public class AttendanceServiceImpl implements AttendanceService {
         Attendance attendance = Attendance.builder()
                 .employee(employee)
                 .date(today)
-                .checkIn(LocalTime.now())
-                .status(LocalTime.now().isAfter(CHECK_IN_DEADLINE)
+                .checkIn(LocalDateTime.now(ZONE_ID))
+                .status(LocalTime.now(ZONE_ID).isAfter(CHECK_IN_DEADLINE)
                         ? AttendanceStatus.LATE
                         : AttendanceStatus.PRESENT)
                 .build();
@@ -69,7 +72,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     public Attendance checkOut(Long employeeId) {
         User employee = userRepository.findById(employeeId).orElseThrow();
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZONE_ID);
 
         Attendance attendance = attendanceRepository
                 .findByEmployeeEmailAndDate(employee.getEmail(), today)
@@ -87,9 +90,9 @@ public class AttendanceServiceImpl implements AttendanceService {
             throw new RuntimeException("You have already checked out today.");
         }
 
-        attendance.setCheckOut(LocalTime.now());
+        attendance.setCheckOut(LocalDateTime.now(ZONE_ID));
 
-        if (LocalTime.now().isBefore(CHECK_OUT_DEADLINE)) {
+        if (LocalTime.now(ZONE_ID).isBefore(CHECK_OUT_DEADLINE)) {
             attendance.setStatus(AttendanceStatus.LATE);
         }
 
