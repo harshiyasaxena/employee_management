@@ -28,7 +28,7 @@
 .announcement-list-card {
   position: relative;
   overflow: hidden;
-  min-height: 600px;
+  height: 700px;
   display: flex;
   flex-direction: column;
 }
@@ -112,7 +112,9 @@
 
 .announcements-list {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-right: 4px;
 }
 
@@ -198,4 +200,20 @@
   .announcement-list-card {
     min-height: auto;
   }
+}
+.announcements-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.announcements-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.announcements-list::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 999px;
+}
+
+.announcements-list::-webkit-scrollbar-thumb:hover {
+  background: #1d4ed8;
 }
