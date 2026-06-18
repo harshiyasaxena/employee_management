@@ -14,6 +14,7 @@ const Lottie = LottieModule.default || LottieModule;
 function Register() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -30,6 +31,7 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await registerUser(formData);
@@ -40,7 +42,15 @@ function Register() {
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data || "Registration Failed");
+      const message = error.response?.data || "Registration Failed";
+
+      alert(message);
+
+      if (message === "Email already exists") {
+        navigate("/login");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,9 +72,7 @@ function Register() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="typing-text">
-  Build. Assign. Track. Grow.
-</div>
+          <div className="typing-text">Build. Assign. Track. Grow.</div>
           <div className="register-animation-wrapper">
             <Lottie
               animationData={teamAnimation}
@@ -122,13 +130,17 @@ function Register() {
           <div className="animated-border">
             <div className="docflow-register-card">
               <div className="register-header">
-  <div className="register-title-row">
-    <img src={registerIcon} alt="Register Icon" className="register-title-icon" />
-    <h2>Register</h2>
-  </div>
+                <div className="register-title-row">
+                  <img
+                    src={registerIcon}
+                    alt="Register Icon"
+                    className="register-title-icon"
+                  />
+                  <h2>Register</h2>
+                </div>
 
-  <p>Create your workforce account</p>
-</div>
+                <p>Create your workforce account</p>
+              </div>
 
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -183,7 +195,17 @@ function Register() {
                   />
                 </div>
 
-                <button type="submit" className="register-submit-btn">
+                {loading && (
+                  <div className="register-loader-overlay">
+                    <div className="loader"></div>
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  className="register-submit-btn"
+                  disabled={loading}
+                >
                   Register
                 </button>
 
