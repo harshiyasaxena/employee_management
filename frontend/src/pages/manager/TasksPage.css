@@ -24,14 +24,12 @@
 .tasks-page .tasks-form-card {
   height: fit-content;
 }
-
 .tasks-page .tasks-list-card {
   position: relative;
-  overflow: hidden;
   border: 1px solid black;
-  min-height: 600px;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .tasks-page .tasks-list-card::before {
@@ -133,10 +131,26 @@
 
 .tasks-page .table-wrapper {
   flex: 1;
-  max-height: 300px;
-  overflow-x: auto;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   border-radius: 14px;
+}
+.tasks-page .table-wrapper::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tasks-page .table-wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tasks-page .table-wrapper::-webkit-scrollbar-thumb {
+  background: #2563eb;
+  border-radius: 999px;
+}
+
+.tasks-page .table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #1d4ed8;
 }
 
 .tasks-page .table {
@@ -152,7 +166,6 @@
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
 }
-
 
 .tasks-page .table tbody tr {
   transition: background 0.2s ease, transform 0.2s ease;
@@ -220,6 +233,7 @@
     min-height: auto;
   }
 }
+
 .tasks-page .table thead th {
   position: sticky;
   top: 0;
@@ -229,6 +243,7 @@
   font-weight: 700;
   border: 1px solid black;
 }
+
 .tasks-page .employee-checkbox-list {
   display: flex;
   flex-direction: column;
@@ -261,10 +276,7 @@
   height: 16px;
   cursor: pointer;
 }
-.status-badge.overdue {
-  background: rgba(220, 38, 38, 0.15);
-  color: #dc2626;
-}
+
 .status-badge {
   display: inline-flex;
   align-items: center;
