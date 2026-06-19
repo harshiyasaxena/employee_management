@@ -337,42 +337,42 @@ workforce-management-system
 │
 ├── frontend
 │   ├── src
-│   │   ├── api
-│   │   ├── components
-│   │   │   ├── common
-│   │   │   └── manager
-│   │   ├── layouts
+│   │   ├── api                          # API service and HTTP request handlers
+│   │   ├── components  
+│   │   │   ├── common                   # Shared components used across pages
+│   │   │   └── manager                  # Manager-specific components
+│   │   ├── layouts                      # Application layout components
 │   │   ├── pages
-│   │   │   ├── manager
-│   │   │   └── EmployeeDashboard.jsx
-│   │   ├── images
-│   │   └── App.jsx
+│   │   │   ├── manager                  # Manager dashboard and management pages
+│   │   │   └── EmployeeDashboard.jsx    # Employee dashboard page
+│   │   ├── images                       # Static images and assets
+│   │   └── App.jsx                      # Root React component
 │   │
-│   ├── public
-│   ├── package.json
+│   ├── public                           # Public static assets
+│   ├── package.json  
 │   └── vite.config.js
 │
 ├── backend
 │   ├── src/main/java/com/workforce
-│   │   ├── config
-│   │   ├── controller
-│   │   ├── dto
-│   │   ├── entity
-│   │   ├── repository
-│   │   ├── scheduler
-│   │   ├── security
-│   │   └── service
+│   │   ├── config                      # Application configuration classes
+│   │   ├── controller                  # REST API controllers
+│   │   ├── dto                         # Data Transfer Objects
+│   │   ├── entity                      # JPA entity classes
+│   │   ├── repository                  # Database repository interfaces
+│   │   ├── scheduler                   # Scheduled background tasks
+│   │   ├── security                    # Authentication and authorization logic
+│   │   └── service                     # Business logic services
 │   │
-│   ├── src/main/resources
-│   ├── pom.xml
-│   ├── Dockerfile
-│   └── mvnw
+│   ├── src/main/resources              # Configuration and resource files
+│   ├── pom.xml                         # Maven dependencies and build settings
+│   ├── Dockerfile                      # Docker container configuration
+│   └── mvnw                            # Maven wrapper script
 │
 ├── database
-│   └── schema.sql
+│   └── schema.sql                      # Database schema definition
 │
-├── .gitignore
-└── README.md
+├── .gitignore                          # Git ignored files and folders
+└── README.md                           # Project documentation
 ```
 
 ---
