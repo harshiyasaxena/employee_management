@@ -99,8 +99,21 @@ useEffect(() => {
                   >
                     <td>{row.employee?.name}</td>
                     <td>{row.date}</td>
-                    <td>{row.checkIn || "-"}</td>
-                    <td>{row.checkOut || "-"}</td>
+                    <td>
+  {row.checkIn
+    ? new Date(row.checkIn).toLocaleTimeString("en-GB", {
+        hour12: false,
+      })
+    : "-"}
+</td>
+
+<td>
+  {row.checkOut
+    ? new Date(row.checkOut).toLocaleTimeString("en-GB", {
+        hour12: false,
+      })
+    : "-"}
+</td>
                     <td>
                       <span className={`status-badge ${row.status.toLowerCase()}`}>
                         {row.status}

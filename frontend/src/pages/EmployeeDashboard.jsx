@@ -593,9 +593,21 @@ const EmployeeDashboard = () => {
                         </div>
                       </td>
 
-                      <td>{record.checkIn || "-"}</td>
+                     <td>
+  {record.checkIn
+    ? new Date(record.checkIn).toLocaleTimeString("en-GB", {
+        hour12: false,
+      })
+    : "-"}
+</td>
 
-                      <td>{record.checkOut || "-"}</td>
+<td>
+  {record.checkOut
+    ? new Date(record.checkOut).toLocaleTimeString("en-GB", {
+        hour12: false,
+      })
+    : "-"}
+</td>
 
                       <td>
                         <div className="cell-flex">
