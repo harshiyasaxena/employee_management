@@ -23,6 +23,12 @@ The application demonstrates Full Stack Development concepts including:
 
 ---
 
+<h2>Screenshots</h2>
+
+<img src="readme%20images/Landing.png" alt="Home Screen" width="600">
+
+---
+
 # Technologies Used
 
 ## Backend
