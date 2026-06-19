@@ -32,6 +32,32 @@ The application demonstrates Full Stack Development concepts including:
   <p><strong>Landing Page</strong></p>
 </div>
 
+<div align="center">
+  <img src="readme%20images/Login.png" alt="Login Screen" width="600">
+  <p><strong>Login Page</strong></p>
+</div>
+
+<div align="center">
+  <img src="readme%20images/Manager%20Dashboard.png" alt="Manager Dashboard Screen" width="600">
+  <p><strong>Manager Dashboard</strong></p>
+</div>
+
+<div align="center">
+  <img src="readme%20images/Task%20Assignment%20Page.png" alt="Task Assignment" width="600">
+  <p><strong>Task Assignment</strong></p>
+</div>
+
+<div align="center">
+  <img src="readme%20images/View%20Attendance.png" alt="Attendance" width="600">
+  <p><strong>Attendance</strong></p>
+</div>
+
+<div align="center">
+  <img src="readme%20images/Employee%20Dashboard.png" alt="Employee Dashboard" width="600">
+  <p><strong>Employee Dashboard</strong></p>
+</div>
+
+
 ---
 
 # Technologies Used
