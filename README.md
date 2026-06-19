@@ -25,7 +25,12 @@ The application demonstrates Full Stack Development concepts including:
 
 <h2>Screenshots</h2>
 
-<img src="readme%20images/Landing.png" alt="Home Screen" width="600">
+
+
+<div align="center">
+  <img src="readme%20images/Landing.png" alt="Home Screen" width="600">
+  <p><strong>Landing Page</strong></p>
+</div>
 
 ---
 
